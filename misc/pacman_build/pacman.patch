@@ -1,0 +1,194 @@
+diff -daur pacman-5.0.1.orig/lib/libalpm/util.c pacman-5.0.1/lib/libalpm/util.c
+--- pacman-5.0.1.orig/lib/libalpm/util.c	2017-10-03 00:23:22.244724649 +0800
++++ pacman-5.0.1/lib/libalpm/util.c	2017-10-03 00:23:48.196306403 +0800
+@@ -617,11 +617,11 @@
+ 		}
+ 
+ 		/* use fprintf instead of _alpm_log to send output through the parent */
+-		if(chroot(handle->root) != 0) {
++		/* if(chroot(handle->root) != 0) {
+ 			fprintf(stderr, _("could not change the root directory (%s)\n"), strerror(errno));
+ 			exit(1);
+-		}
+-		if(chdir("/") != 0) {
++		} */
++		if(chdir(handle->root) != 0) {
+ 			fprintf(stderr, _("could not change directory to %s (%s)\n"),
+ 					"/", strerror(errno));
+ 			exit(1);
+@@ -741,7 +741,7 @@
+  */
+ int _alpm_ldconfig(alpm_handle_t *handle)
+ {
+-	char line[PATH_MAX];
++	/*char line[PATH_MAX];
+ 
+ 	_alpm_log(handle, ALPM_LOG_DEBUG, "running ldconfig\n");
+ 
+@@ -754,7 +754,7 @@
+ 			strcpy(arg0, "ldconfig");
+ 			return _alpm_run_chroot(handle, LDCONFIG, argv, NULL, NULL);
+ 		}
+-	}
++	}*/
+ 
+ 	return 0;
+ }
+diff -daur pacman-5.0.1.orig/src/pacman/callback.c pacman-5.0.1/src/pacman/callback.c
+--- pacman-5.0.1.orig/src/pacman/callback.c	2017-10-03 00:23:22.216725102 +0800
++++ pacman-5.0.1/src/pacman/callback.c	2017-10-03 00:28:21.188055828 +0800
+@@ -197,15 +197,15 @@
+ 			printf(_("checking dependencies...\n"));
+ 			break;
+ 		case ALPM_EVENT_FILECONFLICTS_START:
+-			if(config->noprogressbar) {
+-				printf(_("checking for file conflicts...\n"));
+-			}
++			/*if(config->noprogressbar) {                           */
++			/*        printf(_("checking for file conflicts...\n"));*/
++			/*}                                                     */
+ 			break;
+ 		case ALPM_EVENT_RESOLVEDEPS_START:
+-			printf(_("resolving dependencies...\n"));
++			//printf(_("resolving dependencies...\n"));
+ 			break;
+ 		case ALPM_EVENT_INTERCONFLICTS_START:
+-			printf(_("looking for conflicting packages...\n"));
++			//printf(_("looking for conflicting packages...\n"));
+ 			break;
+ 		case ALPM_EVENT_TRANSACTION_START:
+ 			colon_printf(_("Processing package changes...\n"));
+@@ -250,22 +250,22 @@
+ 			}
+ 			break;
+ 		case ALPM_EVENT_INTEGRITY_START:
+-			if(config->noprogressbar) {
+-				printf(_("checking package integrity...\n"));
+-			}
++			/*if(config->noprogressbar) {                          */
++			/*        printf(_("checking package integrity...\n"));*/
++			/*}                                                    */
+ 			break;
+ 		case ALPM_EVENT_KEYRING_START:
+-			if(config->noprogressbar) {
+-				printf(_("checking keyring...\n"));
+-			}
++			/*if(config->noprogressbar) {                */
++			/*        printf(_("checking keyring...\n"));*/
++			/*}                                          */
+ 			break;
+ 		case ALPM_EVENT_KEY_DOWNLOAD_START:
+ 			printf(_("downloading required keys...\n"));
+ 			break;
+ 		case ALPM_EVENT_LOAD_START:
+-			if(config->noprogressbar) {
+-				printf(_("loading package files...\n"));
+-			}
++			/*if(config->noprogressbar) {                     */
++			/*        printf(_("loading package files...\n"));*/
++			/*}                                               */
+ 			break;
+ 		case ALPM_EVENT_DELTA_INTEGRITY_START:
+ 			printf(_("checking delta integrity...\n"));
+@@ -291,9 +291,9 @@
+ 			colon_printf(_("Retrieving packages...\n"));
+ 			break;
+ 		case ALPM_EVENT_DISKSPACE_START:
+-			if(config->noprogressbar) {
+-				printf(_("checking available disk space...\n"));
+-			}
++			/*if(config->noprogressbar) {                             */
++			/*        printf(_("checking available disk space...\n"));*/
++			/*}                                                       */
+ 			break;
+ 		case ALPM_EVENT_OPTDEP_REMOVAL:
+ 			{
+@@ -409,12 +409,12 @@
+ 				/* print conflict only if it contains new information */
+ 				if(strcmp(q->conflict->package1, q->conflict->reason->name) == 0
+ 						|| strcmp(q->conflict->package2, q->conflict->reason->name) == 0) {
+-					q->remove = noyes(_("%s and %s are in conflict. Remove %s?"),
++					q->remove = yesno(_("%s and %s are in conflict. Remove %s?"),
+ 							q->conflict->package1,
+ 							q->conflict->package2,
+ 							q->conflict->package2);
+ 				} else {
+-					q->remove = noyes(_("%s and %s are in conflict (%s). Remove %s?"),
++					q->remove = yesno(_("%s and %s are in conflict (%s). Remove %s?"),
+ 							q->conflict->package1,
+ 							q->conflict->package2,
+ 							q->conflict->reason->name,
+diff -daur pacman-5.0.1.orig/src/pacman/pacman.c pacman-5.0.1/src/pacman/pacman.c
+--- pacman-5.0.1.orig/src/pacman/pacman.c	2017-10-03 00:23:22.216725102 +0800
++++ pacman-5.0.1/src/pacman/pacman.c	2017-10-03 00:23:48.200306339 +0800
+@@ -1214,10 +1214,10 @@
+ 	}
+ 
+ 	/* check if we have sufficient permission for the requested operation */
+-	if(myuid > 0 && needs_root()) {
++	/* if(myuid > 0 && needs_root()) {
+ 		pm_printf(ALPM_LOG_ERROR, _("you cannot perform this operation unless you are root.\n"));
+ 		cleanup(EXIT_FAILURE);
+-	}
++	} */
+ 
+ 	if(config->verbose > 0) {
+ 		alpm_list_t *j;
+diff -daur pacman-5.0.1.orig/src/pacman/sync.c pacman-5.0.1/src/pacman/sync.c
+--- pacman-5.0.1.orig/src/pacman/sync.c	2017-10-03 00:23:22.216725102 +0800
++++ pacman-5.0.1/src/pacman/sync.c	2017-10-03 00:23:48.200306339 +0800
+@@ -790,7 +790,7 @@
+ 	}
+ 
+ 	display_targets();
+-	printf("\n");
++	//printf("\n");
+ 
+ 	int confirm;
+ 	if(config->op_s_downloadonly) {
+diff -daur pacman-5.0.1.orig/src/pacman/upgrade.c pacman-5.0.1/src/pacman/upgrade.c
+--- pacman-5.0.1.orig/src/pacman/upgrade.c	2017-10-03 00:23:22.216725102 +0800
++++ pacman-5.0.1/src/pacman/upgrade.c	2017-10-03 00:23:48.204306274 +0800
+@@ -84,7 +84,7 @@
+ 		goto fail_free;
+ 	}
+ 
+-	printf(_("loading packages...\n"));
++	//printf(_("loading packages...\n"));
+ 	/* add targets to the created transaction */
+ 	for(i = targets, n = 0; i; i = alpm_list_next(i), n++) {
+ 		const char *targ = i->data;
+diff -daur pacman-5.0.1.orig/src/pacman/util.c pacman-5.0.1/src/pacman/util.c
+--- pacman-5.0.1.orig/src/pacman/util.c	2017-10-03 00:23:22.216725102 +0800
++++ pacman-5.0.1/src/pacman/util.c	2017-10-03 00:23:48.204306274 +0800
+@@ -922,7 +922,7 @@
+ 
+ 	/* print to screen */
+ 	pm_asprintf(&str, "%s (%zu)", _("Packages"), alpm_list_count(targets));
+-	printf("\n");
++	//printf("\n");
+ 
+ 	cols = getcols();
+ 	if(verbose) {
+@@ -934,7 +934,7 @@
+ 	} else {
+ 		list_display(str, names, cols);
+ 	}
+-	printf("\n");
++	//printf("\n");
+ 
+ 	table_free(header, rows);
+ 	FREELIST(names);
+diff -daur pacman-5.0.1.orig/lib/libalpm/add.c pacman-5.0.1/lib/libalpm/add.c
+--- pacman-5.0.1.orig/lib/libalpm/add.c	2018-06-01 17:14:55.869793491 +0800
++++ pacman-5.0.1/lib/libalpm/add.c	2018-06-01 17:15:23.025809532 +0800
+@@ -111,8 +111,7 @@
+ {
+ 	int ret;
+ 	struct archive *archive_writer;
+-	const int archive_flags = ARCHIVE_EXTRACT_OWNER |
+-	                          ARCHIVE_EXTRACT_PERM |
++	const int archive_flags = ARCHIVE_EXTRACT_PERM |
+ 	                          ARCHIVE_EXTRACT_TIME |
+ 	                          ARCHIVE_EXTRACT_UNLINK |
+ 	                          ARCHIVE_EXTRACT_SECURE_SYMLINKS;
