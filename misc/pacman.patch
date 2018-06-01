@@ -1,7 +1,20 @@
-diff -daur pacman-5.0.1.orig/lib/libalpm/util.c pacman-5.0.1/lib/libalpm/util.c
---- pacman-5.0.1.orig/lib/libalpm/util.c	2017-10-03 00:23:22.244724649 +0800
-+++ pacman-5.0.1/lib/libalpm/util.c	2017-10-03 00:23:48.196306403 +0800
-@@ -617,11 +617,11 @@
+diff -daur pacman-5.1.0/lib/libalpm/add.c pacman-5.1.0.new/lib/libalpm/add.c
+--- pacman-5.1.0/lib/libalpm/add.c	2018-05-14 08:02:18.000000000 +0800
++++ pacman-5.1.0.new/lib/libalpm/add.c	2018-06-01 22:02:25.178824360 +0800
+@@ -111,8 +111,7 @@
+ {
+ 	int ret;
+ 	struct archive *archive_writer;
+-	const int archive_flags = ARCHIVE_EXTRACT_OWNER |
+-	                          ARCHIVE_EXTRACT_PERM |
++	const int archive_flags = ARCHIVE_EXTRACT_PERM |
+ 	                          ARCHIVE_EXTRACT_TIME |
+ 	                          ARCHIVE_EXTRACT_UNLINK |
+ 	                          ARCHIVE_EXTRACT_SECURE_SYMLINKS;
+diff -daur pacman-5.1.0/lib/libalpm/util.c pacman-5.1.0.new/lib/libalpm/util.c
+--- pacman-5.1.0/lib/libalpm/util.c	2018-05-14 08:02:18.000000000 +0800
++++ pacman-5.1.0.new/lib/libalpm/util.c	2018-06-01 22:02:25.170824363 +0800
+@@ -623,11 +623,11 @@
  		}
  
  		/* use fprintf instead of _alpm_log to send output through the parent */
@@ -16,7 +29,7 @@ diff -daur pacman-5.0.1.orig/lib/libalpm/util.c pacman-5.0.1/lib/libalpm/util.c
  			fprintf(stderr, _("could not change directory to %s (%s)\n"),
  					"/", strerror(errno));
  			exit(1);
-@@ -741,7 +741,7 @@
+@@ -749,7 +749,7 @@
   */
  int _alpm_ldconfig(alpm_handle_t *handle)
  {
@@ -25,7 +38,7 @@ diff -daur pacman-5.0.1.orig/lib/libalpm/util.c pacman-5.0.1/lib/libalpm/util.c
  
  	_alpm_log(handle, ALPM_LOG_DEBUG, "running ldconfig\n");
  
-@@ -754,7 +754,7 @@
+@@ -762,7 +762,7 @@
  			strcpy(arg0, "ldconfig");
  			return _alpm_run_chroot(handle, LDCONFIG, argv, NULL, NULL);
  		}
@@ -34,9 +47,9 @@ diff -daur pacman-5.0.1.orig/lib/libalpm/util.c pacman-5.0.1/lib/libalpm/util.c
  
  	return 0;
  }
-diff -daur pacman-5.0.1.orig/src/pacman/callback.c pacman-5.0.1/src/pacman/callback.c
---- pacman-5.0.1.orig/src/pacman/callback.c	2017-10-03 00:23:22.216725102 +0800
-+++ pacman-5.0.1/src/pacman/callback.c	2017-10-03 00:28:21.188055828 +0800
+diff -daur pacman-5.1.0/src/pacman/callback.c pacman-5.1.0.new/src/pacman/callback.c
+--- pacman-5.1.0/src/pacman/callback.c	2018-05-14 08:02:18.000000000 +0800
++++ pacman-5.1.0.new/src/pacman/callback.c	2018-06-01 22:02:25.174824362 +0800
 @@ -197,15 +197,15 @@
  			printf(_("checking dependencies...\n"));
  			break;
@@ -103,7 +116,7 @@ diff -daur pacman-5.0.1.orig/src/pacman/callback.c pacman-5.0.1/src/pacman/callb
  			break;
  		case ALPM_EVENT_OPTDEP_REMOVAL:
  			{
-@@ -409,12 +409,12 @@
+@@ -414,12 +414,12 @@
  				/* print conflict only if it contains new information */
  				if(strcmp(q->conflict->package1, q->conflict->reason->name) == 0
  						|| strcmp(q->conflict->package2, q->conflict->reason->name) == 0) {
@@ -118,10 +131,10 @@ diff -daur pacman-5.0.1.orig/src/pacman/callback.c pacman-5.0.1/src/pacman/callb
  							q->conflict->package1,
  							q->conflict->package2,
  							q->conflict->reason->name,
-diff -daur pacman-5.0.1.orig/src/pacman/pacman.c pacman-5.0.1/src/pacman/pacman.c
---- pacman-5.0.1.orig/src/pacman/pacman.c	2017-10-03 00:23:22.216725102 +0800
-+++ pacman-5.0.1/src/pacman/pacman.c	2017-10-03 00:23:48.200306339 +0800
-@@ -1214,10 +1214,10 @@
+diff -daur pacman-5.1.0/src/pacman/pacman.c pacman-5.1.0.new/src/pacman/pacman.c
+--- pacman-5.1.0/src/pacman/pacman.c	2018-05-14 08:02:18.000000000 +0800
++++ pacman-5.1.0.new/src/pacman/pacman.c	2018-06-01 22:02:25.174824362 +0800
+@@ -1163,10 +1163,10 @@
  	}
  
  	/* check if we have sufficient permission for the requested operation */
@@ -132,12 +145,12 @@ diff -daur pacman-5.0.1.orig/src/pacman/pacman.c pacman-5.0.1/src/pacman/pacman.
 -	}
 +	} */
  
- 	if(config->verbose > 0) {
- 		alpm_list_t *j;
-diff -daur pacman-5.0.1.orig/src/pacman/sync.c pacman-5.0.1/src/pacman/sync.c
---- pacman-5.0.1.orig/src/pacman/sync.c	2017-10-03 00:23:22.216725102 +0800
-+++ pacman-5.0.1/src/pacman/sync.c	2017-10-03 00:23:48.200306339 +0800
-@@ -790,7 +790,7 @@
+ 	if(config->sysroot && (chroot(config->sysroot) != 0 || chdir("/") != 0)) {
+ 		pm_printf(ALPM_LOG_ERROR,
+diff -daur pacman-5.1.0/src/pacman/sync.c pacman-5.1.0.new/src/pacman/sync.c
+--- pacman-5.1.0/src/pacman/sync.c	2018-05-14 08:02:18.000000000 +0800
++++ pacman-5.1.0.new/src/pacman/sync.c	2018-06-01 22:02:25.174824362 +0800
+@@ -794,7 +794,7 @@
  	}
  
  	display_targets();
@@ -146,9 +159,9 @@ diff -daur pacman-5.0.1.orig/src/pacman/sync.c pacman-5.0.1/src/pacman/sync.c
  
  	int confirm;
  	if(config->op_s_downloadonly) {
-diff -daur pacman-5.0.1.orig/src/pacman/upgrade.c pacman-5.0.1/src/pacman/upgrade.c
---- pacman-5.0.1.orig/src/pacman/upgrade.c	2017-10-03 00:23:22.216725102 +0800
-+++ pacman-5.0.1/src/pacman/upgrade.c	2017-10-03 00:23:48.204306274 +0800
+diff -daur pacman-5.1.0/src/pacman/upgrade.c pacman-5.1.0.new/src/pacman/upgrade.c
+--- pacman-5.1.0/src/pacman/upgrade.c	2018-05-14 08:02:18.000000000 +0800
++++ pacman-5.1.0.new/src/pacman/upgrade.c	2018-06-01 22:02:25.174824362 +0800
 @@ -84,7 +84,7 @@
  		goto fail_free;
  	}
@@ -158,10 +171,10 @@ diff -daur pacman-5.0.1.orig/src/pacman/upgrade.c pacman-5.0.1/src/pacman/upgrad
  	/* add targets to the created transaction */
  	for(i = targets, n = 0; i; i = alpm_list_next(i), n++) {
  		const char *targ = i->data;
-diff -daur pacman-5.0.1.orig/src/pacman/util.c pacman-5.0.1/src/pacman/util.c
---- pacman-5.0.1.orig/src/pacman/util.c	2017-10-03 00:23:22.216725102 +0800
-+++ pacman-5.0.1/src/pacman/util.c	2017-10-03 00:23:48.204306274 +0800
-@@ -922,7 +922,7 @@
+diff -daur pacman-5.1.0/src/pacman/util.c pacman-5.1.0.new/src/pacman/util.c
+--- pacman-5.1.0/src/pacman/util.c	2018-05-14 08:02:18.000000000 +0800
++++ pacman-5.1.0.new/src/pacman/util.c	2018-06-01 22:02:25.178824360 +0800
+@@ -919,7 +919,7 @@
  
  	/* print to screen */
  	pm_asprintf(&str, "%s (%zu)", _("Packages"), alpm_list_count(targets));
@@ -170,7 +183,7 @@ diff -daur pacman-5.0.1.orig/src/pacman/util.c pacman-5.0.1/src/pacman/util.c
  
  	cols = getcols();
  	if(verbose) {
-@@ -934,7 +934,7 @@
+@@ -931,7 +931,7 @@
  	} else {
  		list_display(str, names, cols);
  	}
@@ -179,16 +192,3 @@ diff -daur pacman-5.0.1.orig/src/pacman/util.c pacman-5.0.1/src/pacman/util.c
  
  	table_free(header, rows);
  	FREELIST(names);
-diff -daur pacman-5.0.1.orig/lib/libalpm/add.c pacman-5.0.1/lib/libalpm/add.c
---- pacman-5.0.1.orig/lib/libalpm/add.c	2018-06-01 17:14:55.869793491 +0800
-+++ pacman-5.0.1/lib/libalpm/add.c	2018-06-01 17:15:23.025809532 +0800
-@@ -111,8 +111,7 @@
- {
- 	int ret;
- 	struct archive *archive_writer;
--	const int archive_flags = ARCHIVE_EXTRACT_OWNER |
--	                          ARCHIVE_EXTRACT_PERM |
-+	const int archive_flags = ARCHIVE_EXTRACT_PERM |
- 	                          ARCHIVE_EXTRACT_TIME |
- 	                          ARCHIVE_EXTRACT_UNLINK |
- 	                          ARCHIVE_EXTRACT_SECURE_SYMLINKS;
