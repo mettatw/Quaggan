@@ -1,0 +1,3 @@
+[submodule "deps/unladen-triskelion"]
+	path = deps/unladen-triskelion
+	url = https://github.com/mettatw/unladen-triskelion.git
